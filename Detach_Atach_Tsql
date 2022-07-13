@@ -89,6 +89,24 @@
 /* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  */
 
  
+ 2º Opção para desanexar e anexar um banco.
+ 
+ -- DESANEXANDO ( também não pode haver conexões na base. 
+USE master;  
+GO  
+EXEC sp_detach_db @dbname = N'DetachAtach';  
+GO 
+
+
+-- Vai "Criar"  a base novamente no NOVO local, mesmo procedimento do ALTER DATABASE MODIFY FILE 
+--ANEXANDO
+CREATE DATABASE DetachAtach   
+    ON (FILENAME = 'C:\SQL2019\MSSQL\MSSQL15.MSSQLSERVER\MSSQL\DATA\DetachAtach1.mdf'),
+	   (FILENAME = 'C:\SQL2019\MSSQL\MSSQL15.MSSQLSERVER\MSSQL\DATA\DetachAtach2.ndf'),
+	   (FILENAME = 'C:\SQL2019\MSSQL\MSSQL15.MSSQLSERVER\MSSQL\DATA\DetachAtach3.ndf'),
+	   (FILENAME = 'C:\SQL2019\MSSQL\MSSQL15.MSSQLSERVER\MSSQL\DATA\DetachAtach_log.ldf') 
+    FOR ATTACH;  
+GO  
  
  
  
