@@ -1,8 +1,14 @@
--- SIMULAÇÃO DE RESTORE COM VARIOS DATAFILE EM ARQUIVO DE BKP. 
+/*
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ Simulando falha no Restore.
+ Novo Arquivo de Backup com novo datafile acrescentado ao banco.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+*/
 
---Criando Banco de dados
- 
+--Criando Banco de dados de Teste
+
 USE MASTER
+
 CREATE DATABASE AULA_BK
  ON  PRIMARY 
 ( 
@@ -21,20 +27,23 @@ CREATE DATABASE AULA_BK
 
 
 USE AULA_BK
+
 CREATE TABLE REGISTROS (
-	ID_REGISTRO INT IDENTITY(1,1)PRIMARY KEY,
-	CARGA VARCHAR (50),	
-) 
+	ID_REGISTRO INT IDENTITY(1,1) PRIMARY KEY,
+	CARGA VARCHAR (50)
+	) 
 GO
 
  
 --Populando Tabela COM 1000 REGISTRO
+
 INSERT INTO REGISTROS VALUES ('1 CARGA')
 GO 1000
 
 
 
  -- BACKUP FULL  
+ 
 BACKUP DATABASE AULA_BK
 TO DISK = 'C:\TEMP\AULA_BK-FULL.bak'
 WITH INIT, COMPRESSION, CHECKSUM, STATS = 10,NAME = 'C:\TEMP\AULA_BK-FULL.bak'
@@ -42,6 +51,7 @@ WITH INIT, COMPRESSION, CHECKSUM, STATS = 10,NAME = 'C:\TEMP\AULA_BK-FULL.bak'
 
  
 --Populando Tabela COM 1000 REGISTRO
+
 INSERT INTO REGISTROS VALUES ('2 CARGA')
 GO 1000
 
@@ -49,6 +59,7 @@ GO 1000
 
 
  -- BACKUP DIFF  
+ 
 BACKUP DATABASE AULA_BK
 TO DISK = 'C:\TEMP\AULA_BK-DIFF.bak'
 WITH DIFFERENTIAL,   COMPRESSION, CHECKSUM, STATS = 10,NAME = 'C:\TEMP\AULA_BK-DIFF.bak'
@@ -58,6 +69,7 @@ WITH DIFFERENTIAL,   COMPRESSION, CHECKSUM, STATS = 10,NAME = 'C:\TEMP\AULA_BK-D
 
 --Passo 5
 --Populando Tabela COM 1000 REGISTRO
+
 INSERT INTO REGISTROS VALUES ('3 CARGA')
 GO 1000
 
@@ -65,18 +77,19 @@ GO 1000
  
  -- BACKUP LOG 
 BACKUP LOG AULA_BK
-TO DISK =   'C:\TEMP\AULA_BK-LOG1.bak'
-WITH  NAME = 'C:\TEMP\AULA_BK-LOG1.bak'
+    TO DISK = 'C:\TEMP\AULA_BK-LOG1.bak'
+  WITH NAME = 'C:\TEMP\AULA_BK-LOG1.bak'
 
 
- --Verificando
-USE AULA_BK2
-SELECT COUNT(*),CARGA CARGA FROM REGISTROS
-GROUP BY CARGA
+ --Verificando QTDE de Registros 
+USE AULA_BK
+SELECT COUNT(*),CARGA 
+  FROM REGISTROS
+ GROUP BY CARGA
 
 
---USE MASTER
 --ADICIONANDO ARQUIVO DE DADOS
+USE MASTER
 ALTER DATABASE AULA_BK
 ADD FILE
 (
@@ -100,9 +113,11 @@ WITH  NAME = 'C:\TEMP\AULA_BK-LOG-2.bak'
 
 
 
-/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  */ 
---RESTORE DE UMA NOVA BASE DE DADOS 
-/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  */ 
+/* 
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
+RESTORE DE UMA NOVA BASE DE DADOS 
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
+*/ 
 USE MASTER
 GO
 DROP DATABASE AULA_BK
