@@ -1,6 +1,7 @@
 
 ### Kit de Ferramentas DBA 🧰
 
- 📁 Scripts
+ 📁 Scripts desenvolvidos para simplificar processos.
+
 _______________________________________________________________________________________________________________
 
